@@ -206,7 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key !== 'Enter') return;
         const code = e.target.value.trim();
         if (!code) return;
-        const product = inventory.find(i => i.barcode && i.barcode === code);
+        const product = inventory.find(i => i.barcode && i.barcode === code)
+                     || inventory.find(i => i.reference && i.reference.toLowerCase() === code.toLowerCase());
         if (product) {
             if (product.stock !== 999 && product.stock <= 0) {
                 alert(`"${product.name}" is out of stock.`);
@@ -582,7 +583,9 @@ function renderProductsGrid() {
     grid.innerHTML = '';
     const filtered = inventory.filter(item => {
         const matchCat = activeCategory === 'All' || item.category === activeCategory;
-        const matchSearch = item.name.toLowerCase().includes(searchTerm);
+        const matchSearch = item.name.toLowerCase().includes(searchTerm)
+            || (item.reference || '').toLowerCase().includes(searchTerm)
+            || (item.barcode || '').toLowerCase().includes(searchTerm);
         return matchCat && matchSearch;
     });
     if (filtered.length === 0) {
@@ -603,6 +606,7 @@ function renderProductsGrid() {
             <div class="product-info">
                 <span class="product-category">${item.category || ''}</span>
                 <h3>${item.name}</h3>
+                ${item.reference ? `<span class="product-reference">Ref: ${item.reference}</span>` : ''}
                 ${item.name_ta ? `<span class="product-name-ta">${item.name_ta}</span>` : ''}
                 <div class="product-price">₹${item.price.toFixed(2)}${item.unit_type === 'weight' ? ' <span class="price-per-kg">/kg</span>' : ''}</div>
                 ${item.unit_type === 'weight' ? '<span class="weight-badge">⚖️ By weight</span>' : ''}
@@ -629,6 +633,7 @@ function renderInventoryList() {
             <td>${item.barcode
                 ? `<button class="barcode-btn" title="View/Print Barcode">&#9646;&#9646;&#9646; ${item.barcode}</button>`
                 : `<span class="no-barcode">—</span>`}</td>
+            <td>${item.reference ? item.reference : `<span class="no-barcode">—</span>`}</td>
             <td class="action-cell">
                 <button class="edit-btn">Edit</button>
                 <button class="delete-btn">Delete</button>
@@ -669,6 +674,7 @@ function startEditItem(item) {
     }
     document.getElementById('invImage').value    = item.image_url;
     document.getElementById('invBarcode').value  = item.barcode || '';
+    document.getElementById('invReference').value = item.reference || '';
     setInvUnitType(item.unit_type === 'weight' ? 'weight' : 'piece');
     document.querySelector('.inventory-card').scrollIntoView({ behavior: 'smooth' });
     document.querySelector('[data-tab="inventory"]').click();
@@ -770,6 +776,7 @@ async function handleInventorySubmit(e) {
         stock:     stock,
         image_url: document.getElementById('invImage').value,
         barcode:   document.getElementById('invBarcode').value.trim() || null,
+        reference: document.getElementById('invReference').value.trim() || null,
         unit_type: unitType,
     };
     try {

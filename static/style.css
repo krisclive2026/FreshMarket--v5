@@ -215,6 +215,7 @@ body {
 .inventory-form { margin-bottom: 24px; }
 .form-group { margin-bottom: 16px; }
 .product-name-ta { display: block; font-size: 0.8rem; color: var(--text-muted); margin-top: -2px; }
+.product-reference { display: block; font-size: 0.7rem; color: var(--text-muted); margin-top: -2px; }
 .inv-name-ta { font-size: 0.8rem; color: var(--text-muted); }
 .cart-item-name-ta { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 3px; }
 .form-group label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.9rem; }
