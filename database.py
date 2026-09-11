@@ -66,6 +66,7 @@ def init_db():
                 category  TEXT NOT NULL DEFAULT 'General',
                 stock     REAL NOT NULL DEFAULT 999,
                 barcode   TEXT,
+                reference TEXT,
                 unit_type TEXT NOT NULL DEFAULT 'piece'
             )
         """)
@@ -88,6 +89,9 @@ def init_db():
 
         if not _col_exists('inventory', 'barcode'):
             cursor.execute("ALTER TABLE inventory ADD COLUMN barcode TEXT")
+
+        if not _col_exists('inventory', 'reference'):
+            cursor.execute("ALTER TABLE inventory ADD COLUMN reference TEXT")
 
         if not _col_exists('inventory', 'name_ta'):
             cursor.execute("ALTER TABLE inventory ADD COLUMN name_ta TEXT NOT NULL DEFAULT ''")
