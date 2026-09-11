@@ -55,6 +55,7 @@ class InventoryItem(BaseModel):
     category: Optional[str] = "General"
     stock: Optional[float] = 999   # piece items: whole count; weight items: kg (decimal)
     barcode: Optional[str] = None
+    reference: Optional[str] = None      # short reference/lookup code, alternative to scanning a barcode
     unit_type: Optional[str] = "piece"   # "piece" (sold by count) or "weight" (sold by kg)
 
     def resolved_name(self) -> str:
@@ -802,8 +803,8 @@ def add_inventory(item: InventoryItem):
     with get_db() as db:
         cursor = db.cursor()
         cursor.execute(
-            "INSERT INTO inventory (name, name_ta, price, image_url, category, stock, barcode, unit_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-            (name, item.name_ta or "", item.price, item.image_url, item.category, item.stock, item.barcode, unit_type)
+            "INSERT INTO inventory (name, name_ta, price, image_url, category, stock, barcode, reference, unit_type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (name, item.name_ta or "", item.price, item.image_url, item.category, item.stock, item.barcode, item.reference, unit_type)
         )
         db.commit()
     return {"status": "success", "message": "Item added to inventory"}
@@ -817,8 +818,8 @@ def update_inventory(item_id: int, item: InventoryItem):
     with get_db() as db:
         cursor = db.cursor()
         cursor.execute(
-            "UPDATE inventory SET name=?, name_ta=?, price=?, image_url=?, category=?, stock=?, barcode=?, unit_type=? WHERE id=?",
-            (name, item.name_ta or "", item.price, item.image_url, item.category, item.stock, item.barcode, unit_type, item_id)
+            "UPDATE inventory SET name=?, name_ta=?, price=?, image_url=?, category=?, stock=?, barcode=?, reference=?, unit_type=? WHERE id=?",
+            (name, item.name_ta or "", item.price, item.image_url, item.category, item.stock, item.barcode, item.reference, unit_type, item_id)
         )
         db.commit()
     return {"status": "success", "message": "Item updated"}
